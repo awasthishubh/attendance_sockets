@@ -12,10 +12,10 @@ require('./socket')(io,lobby)
 app.use(express.static('./static/'))
 
 app.get('/',function(req,res){
-    res.send('df')
+    res.send('Attendance Socket')
 })
 
-
-server.listen(3000,function(){
-    console.log('Server Started')
+PORT= process.env.PORT || 3000
+server.listen(PORT,function(){
+    console.log('Server Started at port:'+PORT)
 })
