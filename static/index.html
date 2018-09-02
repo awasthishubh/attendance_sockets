@@ -1,0 +1,27 @@
+<html>
+    <head>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css" />
+    </head>
+    <body class="row container">
+        <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <div class="col s6">
+            ADMIN<br>
+            <input type="text" placeholder="org" id="admin"/>
+            <input type="submit" onclick="admin()">
+        </div>
+        <div class="col s6">
+            USER<br>
+            <input type="text" placeholder="org" id="org"/>
+            <input type="text" placeholder="reg" id="reg"/>
+            <input type="submit" onclick="mem()">
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script>
+            socket=io();
+            // socket.emit('adminConnect')
+        </script>
+        <script src="./defined.js"></script>
+        </body>
+</html>

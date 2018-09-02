@@ -7,12 +7,17 @@ var io=socketIO(server)
 
 lobby={}
 io.on('connection',(socket)=>{
+    // socket.emit('attDone')
     console.log('user came')
-    socket.join('asd')
+    socket.on('getAllMem', function(){
+        console.log(lobby[socket.org].members)
+        socket.emit('allMem',lobby[socket.org].members)
+    })
     socket.on('adminConnect',(message)=>{
         if(message && !socket.type && message.org){
             lobby[message.org]={
-                members:[]
+                members:[],
+                adminId: socket.id
             }
             socket.org=message.org
             socket.join(message.org)
@@ -31,39 +36,35 @@ io.on('connection',(socket)=>{
             console.log(message)
             if(lobby[message.org]){
                 console.log('member connected')
-                lobby[message.org].members.push({
+                details={
                     reg: message.reg,
-                    id: socket.id
-                })
+                }
+                lobby[message.org].members.push(details)
                 socket.type='mem'
                 socket.org=message.org
                 socket.reg=message.reg
                 socket.join(message.org)
+                socket.broadcast.to(message.org).emit('newMem',details);
+                io.to(lobby[message.org].adminId).emit('allMem',lobby[socket.org].members)
             }
         }
-    })
-    socket.on('ad',function(){
-        // socket.broadcast.to('asd').disconnect()
-        console.log(io.of('/').in('asd').clients())
-        console.log('sd')
     })
 
     socket.on('disconnect',(message,err)=>{
         console.log('user disconnected')
         if(socket.type=='admin'){
-            // socket.to(socket.org).broadcast('lobbyDisconnected')
-            io.of('/').in(socket.org).clients((error, socketIds) => {
-                if (error) throw error;
-              
-                socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(socket.org));
-              
-              });
-            delete lobby[socket.org]
+            socket.broadcast.to(socket.org).emit('adminDis');
+            delete lobby[socket.org];
         }
         if(socket.type=='mem'){
-            // so(socket.org).broadcast(`${socket.reg} Disconnected`)
-            if(lobby[socket.org])
-            lobby[socket.org].members.splice(lobby[socket.org].members.indexOf(socket.reg))
+            details={
+                reg: socket.reg,
+            }
+            if(lobby[socket.org]){
+                lobby[socket.org].members.splice(lobby[socket.org].members.indexOf(socket.reg))
+                socket.broadcast.to(socket.org).emit('userDis',details);
+                io.to(lobby[socket.org].adminId).emit('allMem',lobby[socket.org].members)
+            }
         }
     })
 })
@@ -82,16 +83,6 @@ app.get('/',function(req,res){
     res.send('df')
 })
 
-
-
-// io.on('connection', function(socket) {
-//     console.log('A user connected');
- 
-//     //Whenever someone disconnects this piece of code executed
-//     socket.on('disconnect', function () {
-//        console.log('A user disconnected');
-//     });
-//  });
 
 server.listen(3000,function(){
     console.log('Server Started')
