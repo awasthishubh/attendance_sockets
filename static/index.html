@@ -7,13 +7,17 @@
         <div class="col s6">
             ADMIN<br>
             <input type="text" placeholder="org" id="admin"/>
-            <input type="submit" onclick="admin()">
+            <input type="button" value="Create lobby" onclick="admin()">
+            <input type="button" value="Get all members" onclick="getMem()">
+            <input type="button" value="Take Attendance" onclick="doAttendance()">
+            <input type="button" value="Close lobby" onclick="disconnect()">
         </div>
         <div class="col s6">
             USER<br>
             <input type="text" placeholder="org" id="org"/>
             <input type="text" placeholder="reg" id="reg"/>
-            <input type="submit" onclick="mem()">
+            <input type="button" value="Join lobby" onclick="mem()">
+            <input type="button" value="Leave" onclick="disconnect()">
             </div>
         </div>
 
