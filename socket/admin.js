@@ -1,7 +1,7 @@
 module.exports=function(io,socket,lobby){
     socket.on('adminConnect',(message)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
-        if(message && message.org){
+        if(message && message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
             lobby[message.org]={
                 members:{},
                 adminDetails:{
