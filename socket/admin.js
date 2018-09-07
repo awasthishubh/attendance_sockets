@@ -1,16 +1,21 @@
 module.exports=function(io,socket,lobby){
     socket.on('adminConnect',(message)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
-        if(lobby[message.org]) return socket.emit('connectionErr','Lobby already created')
-        if(message && message.org&& parseFloat(message.threshold)&& message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
+        if(message && message.org){
             lobby[message.org]={
+<<<<<<< HEAD
                 members:{},
                 adminDetails:{
                     id: socket.id,
                     pos: message.pos,
                 },
                 threshold: message.threshold
+=======
+                members:[],
+                adminId: socket.id
+>>>>>>> parent of 531a1e2... Atendance Pos, treshhold
             }
+            if(socket.org) return socket.emit('connectionErr','Lobby already created')
             socket.org=message.org
             socket.join(message.org)
             console.log('admin')
@@ -22,6 +27,7 @@ module.exports=function(io,socket,lobby){
 
     
 
+<<<<<<< HEAD
     socket.on('updatePos',({lat,lng})=>{
         if(socket.type==='admin'){
             if(parseFloat(lat)&&parseFloat(lng)){
@@ -43,6 +49,8 @@ module.exports=function(io,socket,lobby){
         else socket.emit('err','Not an admin')
     })
 
+=======
+>>>>>>> parent of 531a1e2... Atendance Pos, treshhold
     socket.on('allMem', function(){
         if(socket.type=='admin' && lobby[socket.org])
             socket.emit('allMem',lobby[socket.org].members)

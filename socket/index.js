@@ -32,7 +32,7 @@ module.exports= function(io, lobby){
                     console.log(lobby[socket.org].members[socket.details.reg])
                     delete lobby[socket.org].members[socket.details.reg]
                     socket.broadcast.to(socket.org).emit('userDis',socket.details);
-                    io.to(lobby[socket.org].adminId).emit('allMem',lobby[socket.org].members)
+                    io.to(lobby[socket.org].adminDetails.id).emit('allMem',lobby[socket.org].members)
                     socket.reg=socket.org=undefined;
                 }
             }
