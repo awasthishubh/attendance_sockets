@@ -4,7 +4,7 @@ module.exports=function(io,socket,lobby){
         if(lobby[message.org]) return socket.emit('connectionErr','Lobby already created')
         if(message && message.org&& parseFloat(message.threshold)&& message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
             lobby[message.org]={
-                members:[],
+                members:{},
                 adminDetails:{
                     id: socket.id,
                     pos: message.pos,
@@ -20,14 +20,9 @@ module.exports=function(io,socket,lobby){
         else socket.emit('connectionErr','Enter all information')
     })
 
-    socket.on('adminDetails',()=>{
-        if(socket.type==='admin'){
-            console.log(lobby)
-            console.log(lobby[socket.org])
-        }
-    })
+    
 
-    socket.on('updatePos',(lat,lng)=>{
+    socket.on('updatePos',({lat,lng})=>{
         if(socket.type==='admin'){
             if(parseFloat(lat)&&parseFloat(lng)){
                 lobby[socket.org].adminDetails.pos={
@@ -41,12 +36,12 @@ module.exports=function(io,socket,lobby){
     socket.on('updateThreshold',(threshold)=>{
         if(socket.type==='admin'){
             if(parseFloat(threshold)){
-                lobby[socket.org].adminDetails.threshold=threshold
+                lobby[socket.org].threshold=threshold
             }
             else socket.emit('err','Invalid input')
         }
         else socket.emit('err','Not an admin')
-    })  
+    })
 
     socket.on('allMem', function(){
         if(socket.type=='admin' && lobby[socket.org])
@@ -58,8 +53,19 @@ module.exports=function(io,socket,lobby){
         if(socket.type=='admin' && lobby[socket.org]){
             console.log('Marking members of '+socket.org+' present')
             io.to(socket.org).emit('attDone')
-            // socket.disconnect()
         }
         else socket.emit('err',{err:'Not an Admin'})
+    })
+
+    socket.on('status', function(){
+        details={connected:false,type:null, org:null}
+        if(socket.type=='admin'){
+            details.type='Admin'
+            details.org=socket.org
+            details.details=lobby[socket.org]
+            // details.inRange=true
+            if(lobby[socket.org]) details.connected=true
+            socket.emit('status',details)
+        }
     })
 }

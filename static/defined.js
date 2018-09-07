@@ -11,7 +11,14 @@ function admin(){
 }
 
 function mem(){
-    socket.emit('memConnect',{org:$('#org').val(),reg:$('#reg').val()})
+    socket.emit('memConnect',{
+        org:$('#org').val(),
+        reg:$('#reg').val(),
+        pos:{
+            lat:$('#memLat').val(),
+            lng:$('#memLng').val()
+        },
+    })
 }
 
 function doAttendance(){
@@ -69,6 +76,7 @@ socket.on('status',(data)=>{
 
 socket.on('lobbyClosed',()=>{
     console.log('lobby Closed by admin')
+    socket.disconnect()
 })
 
 socket.on('err',(err)=>{
