@@ -1,32 +1,216 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body class="row container">
-        <script src="/socket.io/socket.io.js"></script>
-        <div class="col s6">
-            ADMIN<br>
-            <input type="text" placeholder="org" id="admin"/>
-            <input type="button" value="Create lobby" onclick="admin()">
-            <input type="button" value="Get all members" onclick="getMem()">
-            <input type="button" value="Take Attendance" onclick="doAttendance()">
-            <input type="button" value="Close lobby" onclick="disconnect()">
-        </div>
-        <div class="col s6">
-            USER<br>
-            <input type="text" placeholder="org" id="org"/>
-            <input type="text" placeholder="reg" id="reg"/>
-            <input type="button" value="Join lobby" onclick="mem()">
-            <input type="button" value="Leave" onclick="disconnect()">
-            </div>
-        </div>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-        <script>
-            socket=io();
-            // socket.emit('adminConnect')
-        </script>
-        <script src="./defined.js"></script>
-        </body>
+<head><title>Attendance App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body class="markdown-body" style="
+margin: 0 10%; font-size: 15px;
+">
+<h1><a id="Attendance_App_0"></a>Attendance App</h1>
+<h2><a id="Event_Emits_2"></a>Event Emits:</h2>
+<ul>
+<li>
+<h3><a id="adminConnect_3"></a>adminConnect:</h3>
+<ul>
+<li>to be used by admin of org for creating a lobby</li>
+<li>Errors will be emmited by server as “conectionErr”<pre><code class="language-javascript">socket.emit(<span class="hljs-string">'adminConnect'</span>,{
+    org: <span class="hljs-string">"name of orgaisation"</span>,
+    threshold:<span class="hljs-string">"threshold distance for marking members 'inRange'"</span> ,
+    pos:{
+        lat:<span class="hljs-string">'latitude of admin pos'</span>,
+        lng:<span class="hljs-string">'longitude of admin pos'</span>
+    },
+    token: <span class="hljs-string">"token that u'll get from login"</span>
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="memConnect_18"></a>memConnect:</h3>
+<ul>
+<li>to be used by members of org for connecting to lobby</li>
+<li>Errors will be emmited by server as “conectionErr”<pre><code class="language-javascript">socket.emit(<span class="hljs-string">'memConnect'</span>,{
+    org:<span class="hljs-string">"name of orgaisation"</span>,
+    reg:<span class="hljs-string">"Registration number of member"</span>,
+    pos:{
+        lat:<span class="hljs-string">'latitude of admin pos'</span>,
+        lng:<span class="hljs-string">'longitude of admin pos'</span>
+    },
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="status_31"></a>status:</h3>
+<ul>
+<li>to be used by admin/member for getting connection status</li>
+<li>Server will reply by triggering “status” event (see ‘on’ event handlers)<pre><code class="language-javascript">socket.emit(<span class="hljs-string">'status'</span>)
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="markPresent_38"></a>markPresent:</h3>
+<ul>
+<li>to be used by admin for taking attendance<pre><code class="language-javascript">socket.emit(<span class="hljs-string">'markPresent'</span>)
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="allMem_44"></a>allMem:</h3>
+<ul>
+<li>to be used by admin for getting list of all connected members</li>
+<li>server will trigger <code>allMem</code> to send data<pre><code class="language-javascript">socket.emit(<span class="hljs-string">'allMem'</span>)
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="updatePos_51"></a>updatePos:</h3>
+<ul>
+<li>can be used by admin or member for updating their position<pre><code class="language-javascript">socket.emit(<span class="hljs-string">'updatePos'</span>,{
+  lat:<span class="hljs-string">"latitude of admin pos"</span>,
+  lng:<span class="hljs-string">"longitude of admin pos"</span>
+})
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<h3><a id="updateThreshold_61"></a>updateThreshold:</h3>
+<ul>
+<li>to be used by admin for updating threshold distance<pre><code class="language-javascript">    socket.emit(<span class="hljs-string">'updateThreshold'</span>,thresholdDist)
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2><a id="Event_handlers_on_67"></a>Event handlers (on):</h2>
+<ul>
+<li>
+<h3><a id="newMem_69"></a>newMem:</h3>
+<ul>
+<li>Event will be triggered by server when a new member will join</li>
+<li>Event will be triggered for both admin and members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'newMem'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(data.reg+<span class="hljs-string">' joined'</span>)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="connectionErr_78"></a>connectionErr:</h3>
+<ul>
+<li>Event will be triggered by server when there will be an err during connecting/creating a lobby</li>
+<li>Event will be triggered for both admin and members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'connectionErr'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">errMessage</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(errMessage)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="connectionSucess_87"></a>connectionSucess:</h3>
+<ul>
+<li>Event will be triggered on sucessfull creation/connection to lobby</li>
+<li>Event will be triggered for both admin and members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'connectionSucess'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">message</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(data.reg+<span class="hljs-string">' message'</span>)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="newMem_96"></a>newMem:</h3>
+<ul>
+<li>Event will be triggered by server when a new member will join</li>
+<li>Event will be triggered for both admin and members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'newMem'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(data.reg+<span class="hljs-string">' joined'</span>)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="userDis_105"></a>userDis</h3>
+<ul>
+<li>Event will be triggered by server when a member left</li>
+<li>Event will be triggered for both admin and members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'userDis'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>{
+    <span class="hljs-built_in">console</span>.log(data.reg+<span class="hljs-string">' left'</span>)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="attDone_114"></a>attDone</h3>
+<ul>
+<li>Event will be triggered by server when admin completes attendance</li>
+<li>Event will be triggered for both admin and members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'attDone'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Attandance done'</span>)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="allMem_123"></a>allMem</h3>
+<ul>
+<li>Event will be triggered by for sending list of all connected members</li>
+<li>Event will be triggered for admin only</li>
+<li>Event will be triggered automatically when a new member joins, left or admin manually emit “allmem” event<pre><code class="language-javascript">socket.on(<span class="hljs-string">'allMem'</span>,(data)=&gt;{
+    <span class="hljs-built_in">console</span>.log(data)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="status_133"></a>status</h3>
+<ul>
+<li>Event will be triggered by server when admin/member will emit <code>status</code> event (refer status in event emit)</li>
+<li>It will send status following details
+<ul>
+<li>Connected: <code>true || false</code></li>
+<li>type: <code>Admin || Member</code></li>
+<li>inRange: &quot;<code>true</code> if member is in range of threshold distance&quot;</li>
+<li>details: &quot;details of member or lobby(in case of admin)</li>
+</ul>
+</li>
+<li>Event will be triggered for both admin and members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'status'</span>,(data)=&gt;{
+    <span class="hljs-built_in">console</span>.log(data)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="lobbyClosed_147"></a>lobbyClosed</h3>
+<ul>
+<li>Event will be triggered automatically for members when admin leaves or closes lobby</li>
+<li>Event will be triggered only for members<pre><code class="language-javascript">socket.on(<span class="hljs-string">'lobbyClosed'</span>,()=&gt;{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'lobby Closed by admin'</span>)
+    socket.disconnect()
+})
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<h3><a id="err_157"></a>err</h3>
+<ul>
+<li>Event will be triggered with error message whenever an err(except connection err) will occur<pre><code class="language-javascript">socket.on(<span class="hljs-string">'err'</span>,(errMessage)=&gt;{
+    <span class="hljs-built_in">console</span>.log(errMessage)
+})
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</body>
 </html>

@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body class="row container">
+        <script src="/socket.io/socket.io.js"></script>
+        <div class="col s6">
+            ADMIN<br>
+            <input type="text" placeholder="org" id="admin">
+            <input type="text" placeholder="lat" id="adminLat">
+            <input type="text" placeholder="lng" id="adminLng">
+            <input type="text" placeholder="threshold" id="threshold">
+            <input type="button" value="Create lobby" onclick="admin()">
+            <input type="button" value="Get all members" onclick="getMem()">
+            <input type="button" value="Take Attendance" onclick="doAttendance()">
+            <input type="button" value="Close lobby" onclick="disconnect()">
+        </div>
+        <div class="col s6">
+            USER<br>
+            <input type="text" placeholder="org" id="org">
+            <input type="text" placeholder="reg" id="reg">
+            <input type="text" placeholder="memLat" id="memLat">
+            <input type="text" placeholder="memLng" id="memLng">
+            <input type="button" value="Join lobby" onclick="mem()">
+            <input type="button" value="Leave" onclick="disconnect()">
+            </div>
+        
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script>
+            socket=io();
+            // socket.emit('adminConnect')
+        </script>
+        <script src="./defined.js"></script>
+        
+</body>
+</html>
