@@ -1,5 +1,13 @@
 function admin(){
-    socket.emit('adminConnect',{org:$('#admin').val()})
+    socket.emit('adminConnect',{
+        org:$('#admin').val(), //for testing
+        threshold:$('#threshold').val(),
+        pos:{
+            lat:$('#adminLat').val(),
+            lng:$('#adminLng').val()
+        },
+        token: 'token that u\'ll get from login'
+    })
 }
 
 function mem(){
@@ -17,6 +25,14 @@ function members(){
 function disconnect(){
     socket.disconnect();
     console.log('disconnected')
+}
+
+function updatePos(lat,lng){
+    socket.emit('updatePos',{lat,lng})
+}
+
+function updateThreshold(threshold){
+    socket.emit('updateThreshold',threshold)
 }
 
 socket.on('newMem',function(data){
