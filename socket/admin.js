@@ -1,4 +1,4 @@
-module.exports=function(io,socket,lobby){
+module.exports=function(io,socket,lobby,updateinRange){
     socket.on('adminConnect',(message)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
         if(message && message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
@@ -28,6 +28,7 @@ module.exports=function(io,socket,lobby){
                 lobby[socket.org].adminDetails.pos={
                     lat,lng
                 }
+                updateinRange(lobby[socket.org])
             }
             else socket.emit('err','Invalid input')
         }
@@ -37,6 +38,7 @@ module.exports=function(io,socket,lobby){
         if(socket.type==='admin'){
             if(parseFloat(threshold)){
                 lobby[socket.org].threshold=threshold
+                updateinRange(lobby[socket.org])
             }
             else socket.emit('err','Invalid input')
         }

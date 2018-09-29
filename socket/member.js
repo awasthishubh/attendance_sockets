@@ -1,4 +1,4 @@
-module.exports=function(io,socket,lobby){
+module.exports=function(io,socket,lobby,updateinRange){
 
     socket.on('memConnect',(message,err)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
@@ -12,10 +12,13 @@ module.exports=function(io,socket,lobby){
                     pos:message.pos
                 }
                 lobby[message.org].members[details.reg]=details
+                updateinRange(lobby[message.org],details.reg)
+
                 socket.type='mem'
                 socket.org=message.org
                 socket.details=details
                 socket.join(message.org)
+
                 socket.broadcast.to(message.org).emit('newMem',details);
                 io.to(lobby[message.org].adminDetails.id).emit('allMem',lobby[socket.org].members)
                 socket.emit('connectionSucess','Successfully joined lobby')
@@ -34,6 +37,7 @@ module.exports=function(io,socket,lobby){
                 lobby[socket.org].members[socket.details.reg].pos={
                     lat,lng
                 }
+                updateinRange(lobby[socket.org],details.reg)
                 console.log(lobby[socket.org].members[socket.details.reg].pos)
             }
             else socket.emit('err','Invalid input')
@@ -42,14 +46,14 @@ module.exports=function(io,socket,lobby){
 
 
     socket.on('status', function(){
-        details={connected:false,type:null, org:null,inRange:null}
+        details={connected:false,type:null, org:null}
         console.log(socket.type)
         if(!socket.type) return socket.emit('status',details)
         if(socket.type=='mem'){
             details.type='Member'
             details.org=socket.org
             details.details=socket.details
-            details.inRange=true
+            
             if(lobby[socket.org].members[socket.details.reg]) details.connected=true
             socket.emit('status',details)
         }
