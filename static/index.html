@@ -14,7 +14,8 @@ margin: 0 10%; font-size: 15px;
 <ul>
 <li>to be used by admin of org for creating a lobby</li>
 <li>Errors will be emmited by server as “conectionErr”<pre><code class="language-javascript">socket.emit(<span class="hljs-string">'adminConnect'</span>,{
-    org: <span class="hljs-string">"name of orgaisation"</span>,
+    org: <span class="hljs-string">"usid of orgaisation"</span>,
+    passwd: <span class="hljs-string">"Password of org"</span>,
     threshold:<span class="hljs-string">"threshold distance for marking members 'inRange'"</span> ,
     pos:{
         lat:<span class="hljs-string">'latitude of admin pos'</span>,
