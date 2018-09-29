@@ -1,6 +1,7 @@
 function admin(){
     socket.emit('adminConnect',{
         org:$('#admin').val(), //for testing
+        passwd:$('#passwd').val(),
         threshold:$('#threshold').val(),
         pos:{
             lat:$('#adminLat').val(),

@@ -1,6 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const url = require('../keys/key').db;
 const dbName = 'freeslots';
+var md5 = require('md5'); //hashing
 module.exports=function(){
     return new Promise(function(resolve,reject){
         MongoClient.connect(url, { useNewUrlParser: true },function(err, client) {
@@ -19,10 +20,10 @@ module.exports=function(){
                     });
                 })
             }
-            function findOrg(usid){
+            function findOrg(usid,passwd){
                 return new Promise((resolve, reject)=>{
                     var collection = db.collection('organisations');
-                    collection.find({usid}).toArray(function(err, docs) {
+                    collection.find({usid,passwd:md5(passwd)}).toArray(function(err, docs) {
                         if(err){
                             reject(err)
                         }
