@@ -1,9 +1,11 @@
-module.exports=function(io,socket,lobby,updateinRange){
+module.exports=function(io,socket,lobby,findmem,updateinRange){
 
-    socket.on('memConnect',(message,err)=>{
+    socket.on('memConnect',async (message,err)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
 
         if(message && message.org&& message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
+            if(!(await findmem(message.reg,message.org))) return socket.emit('connectionErr','Not regestered')
+            
             console.log(message)
             if(lobby[message.org]){
                 console.log('member connected')

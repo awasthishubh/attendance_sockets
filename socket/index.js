@@ -29,9 +29,13 @@ function updateInRange(org, mem){
         org.members[mem].dist=dist
     }
 }
+
+
 // console.log(calDist({lat:12.9723, lng:79.1557},{lat:12.972306, lng:79.156181}))
 
-module.exports= function(io, lobby){
+module.exports=async function(io, lobby){
+    find=await require('../db/db')()
+    
     io.on('connection',(socket)=>{
 
         socket.on('lobbyDetails',()=>{
@@ -46,10 +50,10 @@ module.exports= function(io, lobby){
             console.log()
             console.log()
         })
-        console.log('user came')
+        console.log('New User Joined')
 
-        require('./admin')(io,socket,lobby,updateInRange)
-        require('./member')(io,socket,lobby,updateInRange)
+        require('./admin')(io,socket,lobby,find.findOrg,updateInRange)
+        require('./member')(io,socket,lobby,find.findMem,updateInRange)
         
         
 

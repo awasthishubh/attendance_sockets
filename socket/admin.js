@@ -1,7 +1,8 @@
-module.exports=function(io,socket,lobby,updateinRange){
-    socket.on('adminConnect',(message)=>{
+module.exports=function(io,socket,lobby,findorg,updateinRange){
+    socket.on('adminConnect',async (message)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
-        if(message && message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
+        if(message&&message.passwd && message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
+            if(!(await findorg(message.org,message.passwd))) return socket.emit('connectionErr','Not regestered')
             lobby[message.org]={
                 members:{},
                 adminDetails:{
@@ -13,7 +14,7 @@ module.exports=function(io,socket,lobby,updateinRange){
             if(socket.org) return socket.emit('connectionErr','Lobby already created')
             socket.org=message.org
             socket.join(message.org)
-            console.log('admin')
+            console.log('Admin created a lobby')
             socket.type='admin'
             socket.emit('connectionSucess','Lobby Created Successfully ')
         }
