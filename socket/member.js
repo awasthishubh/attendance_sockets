@@ -2,7 +2,7 @@ module.exports=function(io,socket,lobby,findmem,updateinRange){
 
     socket.on('memConnect',async (message,err)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
-
+        console.log(message)
         if(message && message.org&& message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
             if(!(await findmem(message.reg,message.org))) return socket.emit('connectionErr','Not regestered')
             
@@ -48,21 +48,23 @@ module.exports=function(io,socket,lobby,findmem,updateinRange){
 
 
     socket.on('status', function(){
-        details={connected:false,type:null, org:null}
-        console.log(socket.type)
+        details={connected:false,type:null, inRange:null, details:{}, dist:0}
         if(!socket.type) return socket.emit('status',details)
         if(socket.type=='mem'){
             details.type='Member'
-            details.org=socket.org
-            details.details=socket.details
-            
-            if(lobby[socket.org].members[socket.details.reg]) details.connected=true
+            details.details={
+                pos:socket.details.pos,
+                id:socket.details.reg,
+                org:socket.org,
+            }
+            details.inRange=socket.details.inRange
+            details.dist=socket.details.dist
+            if(lobby[socket.org]) details.connected=true
             socket.emit('status',details)
         }
+        console.log(socket.type)
+        if(!socket.type) return socket.emit('status',details)      
     })
-
-
-
-    
+  
 
 }

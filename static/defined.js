@@ -1,24 +1,27 @@
 function admin(){
-    socket.emit('adminConnect',{
-        org:$('#admin').val(), //for testing
-        passwd:$('#passwd').val(),
-        threshold:$('#threshold').val(),
-        pos:{
-            lat:$('#adminLat').val(),
-            lng:$('#adminLng').val()
-        },
-        token: 'token that u\'ll get from login'
+    navigator.geolocation.getCurrentPosition(function(pos){
+        socket.emit('adminConnect',{
+            org:$('#admin').val(), //for testing
+            passwd:$('#passwd').val(),
+            threshold:$('#threshold').val(),
+            pos:{
+                lat:pos.coords.latitude,
+                lng:pos.coords.longitude
+            }
+        })
     })
 }
 
 function mem(){
-    socket.emit('memConnect',{
-        org:$('#org').val(),
-        reg:$('#reg').val(),
-        pos:{
-            lat:$('#memLat').val(),
-            lng:$('#memLng').val()
-        },
+    navigator.geolocation.getCurrentPosition(function(pos){
+        socket.emit('memConnect',{
+            org:$('#org').val(),
+            reg:$('#reg').val(),
+            pos:{
+                lat:pos.coords.latitude,
+                lng:pos.coords.longitude
+            }
+        })
     })
 }
 
@@ -68,11 +71,31 @@ socket.on('attDone',function(){
 })
 
 socket.on('allMem',(data)=>{
+    a=''
+    for(i in data){
+        a+=`
+        Reg: ${data[i].reg}<br>
+        Lat: ${data[i].pos.lat}<br>
+        Lng: ${data[i].pos.lng}<br>
+        inRange: ${data[i].inRange}<br>
+        dist: ${data[i].dist}<br><br><br>
+        `
+    }
+    $('#members').html(a)
     console.log(data)
 })
 
 socket.on('status',(data)=>{
     console.log(data)
+    a=`Connected: ${data.connected}<br>
+    Organisation: ${data.details.org}<br>
+    Type: ${data.type}<br>
+    Lat: ${data.details.pos.lat}<br>
+    Lng: ${data.details.pos.lng}<br>
+    inRange: ${data.inRange}<br>
+    dist: ${data.dist}<br>
+    `
+    $('#status').html(a)
 })
 
 socket.on('lobbyClosed',()=>{

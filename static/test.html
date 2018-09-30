@@ -9,8 +9,6 @@
             ADMIN<br>
             <input type="text" placeholder="org" id="admin">
             <input type="text" placeholder="Password" id="passwd">
-            <input type="text" placeholder="lat" id="adminLat">
-            <input type="text" placeholder="lng" id="adminLng">
             <input type="text" placeholder="threshold" id="threshold">
             <input type="button" value="Create lobby" onclick="admin()">
             <input type="button" value="Get all members" onclick="getMem()">
@@ -21,19 +19,26 @@
             USER<br>
             <input type="text" placeholder="org" id="org">
             <input type="text" placeholder="reg" id="reg">
-            <input type="text" placeholder="memLat" id="memLat">
-            <input type="text" placeholder="memLng" id="memLng">
             <input type="button" value="Join lobby" onclick="mem()">
             <input type="button" value="Leave" onclick="disconnect()">
+        </div>
+        <div class="col s8 offset-s2 offset-m3 offset-l3" style="padding-top:100px">
+            <input type="button" value="Status" onclick="socket.emit('status')">
+            <div id="status">
+
             </div>
+            <h6><b>Members</b></h6>
+            <div id="members">
+
+            </div>
+        </div>
         
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
         <script>
             socket=io();
-            // socket.emit('adminConnect')
         </script>
         <script src="./defined.js"></script>
         
-</body>
+    </body>
 </html>

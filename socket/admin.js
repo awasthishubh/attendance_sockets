@@ -61,12 +61,14 @@ module.exports=function(io,socket,lobby,findorg,updateinRange){
     })
 
     socket.on('status', function(){
-        details={connected:false,type:null, org:null}
+        details={connected:false,type:null, inRange:null, details:{}, dist:0}
         if(socket.type=='admin'){
             details.type='Admin'
-            details.org=socket.org
-            details.details=lobby[socket.org]
-            // details.inRange=true
+            details.details={
+                pos:lobby[socket.org].adminDetails.pos,
+                id:lobby[socket.org].adminDetails.id,
+                org:socket.org,
+            }
             if(lobby[socket.org]) details.connected=true
             socket.emit('status',details)
         }
