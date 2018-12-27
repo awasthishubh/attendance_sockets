@@ -24,6 +24,7 @@ module.exports=function(io,socket,lobby,findmem,updateinRange){
                 socket.broadcast.to(message.org).emit('newMem',details);
                 io.to(lobby[message.org].adminDetails.id).emit('allMem',lobby[socket.org].members)
                 socket.emit('connectionSucess','Successfully joined lobby')
+                socket.emit('lobbyJoinSucess','Successfully joined lobby')
             }
             else socket.emit('connectionErr','Lobby not found')
         }

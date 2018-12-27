@@ -17,6 +17,7 @@ module.exports=function(io,socket,lobby,findorg,updateinRange){
             console.log('Admin created a lobby')
             socket.type='admin'
             socket.emit('connectionSucess','Lobby Created Successfully ')
+            socket.emit('lobbyCreateSucess','Lobby Created Successfully ')
         }
         else socket.emit('connectionErr','Enter all information')
     })
