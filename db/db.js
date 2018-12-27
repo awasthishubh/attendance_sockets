@@ -2,10 +2,13 @@ const MongoClient = require('mongodb').MongoClient;
 const url = require('../keys/key').db;
 const dbName = 'freeslots';
 var md5 = require('md5'); //hashing
+console.log(url)
 module.exports=function(){
     return new Promise(function(resolve,reject){
         MongoClient.connect(url, { useNewUrlParser: true },function(err, client) {
-            if(err) return
+            if(err){
+                throw err
+            }
             console.log("Connected successfully to db server");
             const db = client.db(dbName);
             function findMem(reg, org){
