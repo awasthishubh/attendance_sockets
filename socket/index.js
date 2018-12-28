@@ -37,6 +37,7 @@ function calDist(pos1,pos2){
 	}
 }
 
+
 function updateInRange(org, mem){
     console.log(org.members[mem])
     if(!mem){
@@ -55,7 +56,26 @@ function updateInRange(org, mem){
 }
 
 
+
 // console.log(calDist({lat:12.9723, lng:79.1557},{lat:12.972306, lng:79.156181}))
+
+function disconnect(socket,lobby){
+    console.log('user disconnected')
+    if(socket.type=='admin'){
+        socket.broadcast.to(socket.org).emit('lobbyClosed');
+        delete lobby[socket.org];
+        socket.org=undefined;
+    }
+    if(socket.type=='mem'){
+        if(lobby[socket.org]){
+            console.log(lobby[socket.org].members[socket.details.reg])
+            delete lobby[socket.org].members[socket.details.reg]
+            socket.broadcast.to(socket.org).emit('userDis',socket.details);
+            io.to(lobby[socket.org].adminDetails.id).emit('allMem',lobby[socket.org].members)
+            socket.reg=socket.org=undefined;
+        }
+    }
+}
 
 module.exports=async function(io, lobby){
     find=await require('../db/db')()
@@ -79,24 +99,11 @@ module.exports=async function(io, lobby){
         require('./admin')(io,socket,lobby,find.findOrg,updateInRange)
         require('./member')(io,socket,lobby,find.findMem,updateInRange)
         
-        
-
-        socket.on('disconnect',(message,err)=>{
-            console.log('user disconnected')
-            if(socket.type=='admin'){
-                socket.broadcast.to(socket.org).emit('lobbyClosed');
-                delete lobby[socket.org];
-                socket.org=undefined;
-            }
-            if(socket.type=='mem'){
-                if(lobby[socket.org]){
-                    console.log(lobby[socket.org].members[socket.details.reg])
-                    delete lobby[socket.org].members[socket.details.reg]
-                    socket.broadcast.to(socket.org).emit('userDis',socket.details);
-                    io.to(lobby[socket.org].adminDetails.id).emit('allMem',lobby[socket.org].members)
-                    socket.reg=socket.org=undefined;
-                }
-            }
+        socket.on('disconnect',(message,err)=>{ //automatic disconnect
+            disconnect(socket,lobby)
+        })
+        socket.on('disconnectMe',(message,err)=>{ //manual disconnect
+            disconnect(socket,lobby)
         })
 
     })
