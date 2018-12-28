@@ -3,11 +3,13 @@ module.exports=function(io,socket,lobby,findmem,updateinRange){
     socket.on('memConnect',async (message,err)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
         console.log(message)
-        if(message && message.org&& message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
+        if(message && message.reg && message.org&& message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
             // if(!(await findmem(message.reg,message.org))) return socket.emit('connectionErr','Not regestered')
-            
+            message.org=message.org.toLowerCase()
+            message.reg=message.reg.toLowerCase()
             console.log(message)
             if(lobby[message.org]){
+                if(lobby[message.org].members[details.reg]) return socket.emit('connectionErr','Member Id is already a part of Lobby')
                 console.log('member connected')
                 details={
                     reg: message.reg,

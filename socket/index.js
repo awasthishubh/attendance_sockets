@@ -59,7 +59,7 @@ function updateInRange(org, mem){
 
 // console.log(calDist({lat:12.9723, lng:79.1557},{lat:12.972306, lng:79.156181}))
 
-function disconnect(socket,lobby){
+function disconnect(socket,lobby,io){
     console.log('user disconnected')
     if(socket.type=='admin'){
         socket.broadcast.to(socket.org).emit('lobbyClosed');
@@ -102,10 +102,10 @@ module.exports=async function(io, lobby){
         require('./member')(io,socket,lobby,find.findMem,updateInRange)
         
         socket.on('disconnect',(message,err)=>{ //automatic disconnect
-            disconnect(socket,lobby)
+            disconnect(socket,lobby,io)
         })
         socket.on('disconnectMe',(message,err)=>{ //manual disconnect
-            disconnect(socket,lobby)
+            disconnect(socket,lobby,io)
         })
 
     })

@@ -1,8 +1,10 @@
 module.exports=function(io,socket,lobby,findorg,updateinRange){
     socket.on('adminConnect',async (message)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
-        if(message&&message.passwd && message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
+        if(message&& message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
             // if(!(await findorg(message.org,message.passwd))) return socket.emit('connectionErr','Not regestered')
+            message.org=message.org.toLowerCase()
+            if(lobby[message.org]) return socket.emit('connectionErr','Organisation ID already in use.')
             lobby[message.org]={
                 members:{},
                 adminDetails:{
