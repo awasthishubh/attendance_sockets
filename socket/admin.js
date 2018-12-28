@@ -70,6 +70,7 @@ module.exports=function(io,socket,lobby,findorg,updateinRange){
                 id:lobby[socket.org].adminDetails.id,
                 org:socket.org,
             }
+            details.dist=lobby[socket.org].threshold
             if(lobby[socket.org]) details.connected=true
             socket.emit('status',details)
         }
