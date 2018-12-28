@@ -4,7 +4,7 @@ module.exports=function(io,socket,lobby,findmem,updateinRange){
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
         console.log(message)
         if(message && message.org&& message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
-            if(!(await findmem(message.reg,message.org))) return socket.emit('connectionErr','Not regestered')
+            // if(!(await findmem(message.reg,message.org))) return socket.emit('connectionErr','Not regestered')
             
             console.log(message)
             if(lobby[message.org]){

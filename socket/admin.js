@@ -2,7 +2,7 @@ module.exports=function(io,socket,lobby,findorg,updateinRange){
     socket.on('adminConnect',async (message)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
         if(message&&message.passwd && message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
-            if(!(await findorg(message.org,message.passwd))) return socket.emit('connectionErr','Not regestered')
+            // if(!(await findorg(message.org,message.passwd))) return socket.emit('connectionErr','Not regestered')
             lobby[message.org]={
                 members:{},
                 adminDetails:{

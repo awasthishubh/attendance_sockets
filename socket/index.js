@@ -65,6 +65,7 @@ function disconnect(socket,lobby){
         socket.broadcast.to(socket.org).emit('lobbyClosed');
         delete lobby[socket.org];
         socket.org=undefined;
+        socket.type=undefined;
     }
     if(socket.type=='mem'){
         if(lobby[socket.org]){
@@ -73,6 +74,7 @@ function disconnect(socket,lobby){
             socket.broadcast.to(socket.org).emit('userDis',socket.details);
             io.to(lobby[socket.org].adminDetails.id).emit('allMem',lobby[socket.org].members)
             socket.reg=socket.org=undefined;
+            socket.type=undefined;
         }
     }
 }
@@ -87,9 +89,9 @@ module.exports=async function(io, lobby){
             console.log()
             console.log()
             console.log(lobby)
-            console.log(lobby[socket.org])
+            // console.log(lobby[socket.org])
             console.log('members')
-            console.log(lobby[socket.org].members)
+            // console.log(lobby[socket.org].members)
             console.log()
             console.log()
             console.log()
