@@ -1,4 +1,4 @@
-module.exports=function(io,socket,lobby,findmem,updateinRange){
+module.exports=function(io,socket,lobby,updateinRange){
 
     socket.on('memConnect',async (message,err)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
@@ -9,13 +9,14 @@ module.exports=function(io,socket,lobby,findmem,updateinRange){
             message.reg=message.reg.toLowerCase()
             console.log(message)
             if(lobby[message.org]){
-                if(lobby[message.org].members[details.reg]) return socket.emit('connectionErr','Member Id is already a part of Lobby')
+                if(lobby[message.org].members[message.reg]) return socket.emit('connectionErr','Member Id is already a part of Lobby')
                 console.log('member connected')
                 details={
                     reg: message.reg,
                     pos:message.pos
                 }
                 lobby[message.org].members[details.reg]=details
+                console.log(typeof(updateinRange))
                 updateinRange(lobby[message.org],details.reg)
 
                 socket.type='mem'

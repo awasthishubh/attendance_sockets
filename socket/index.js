@@ -79,7 +79,7 @@ function disconnect(socket,lobby,io){
     }
 }
 
-module.exports=async function(io, lobby){
+module.exports=async function(io, lobby,download){
     find=await require('../db/db')()
     
     io.on('connection',(socket)=>{
@@ -98,9 +98,15 @@ module.exports=async function(io, lobby){
         })
         console.log('New User Joined')
 
-        require('./admin')(io,socket,lobby,find.findOrg,updateInRange)
-        require('./member')(io,socket,lobby,find.findMem,updateInRange)
-        
+        require('./admin')(io,socket,lobby,download,updateInRange)
+        require('./member')(io,socket,lobby,updateInRange)
+        console.log()
+            console.log()
+            console.log()
+            console.log(updateInRange)
+            console.log()
+            console.log()
+            console.log()
         socket.on('disconnect',(message,err)=>{ //automatic disconnect
             disconnect(socket,lobby,io)
         })

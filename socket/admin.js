@@ -1,4 +1,4 @@
-module.exports=function(io,socket,lobby,findorg,updateinRange){
+module.exports=function(io,socket,lobby,download,updateinRange){
     socket.on('adminConnect',async (message)=>{
         if(socket.type) return socket.emit('connectionErr','Already a part of lobby')
         if(message&& message.org&& parseFloat(message.threshold)&&message.pos &&  parseFloat(message.pos.lat) && parseFloat(message.pos.lng)){
@@ -58,7 +58,13 @@ module.exports=function(io,socket,lobby,findorg,updateinRange){
     socket.on('markPresent', function(){
         if(socket.type=='admin' && lobby[socket.org]){
             console.log('Marking members of '+socket.org+' present')
-            io.to(socket.org).emit('attDone')
+            dwnName=socket.org+(new Date).getTime()
+            download[dwnName]={...lobby[socket.org]}
+            socket.emit('downloadCSV',{url:`csv/${dwnName}`})
+            setTimeout(()=>{ //del after 3 min
+                delete download[dwnName]
+            },180000)
+            socket.broadcast.to(socket.org).emit('attDone');
         }
         else socket.emit('err',{err:'Not an Admin'})
     })
