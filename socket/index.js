@@ -1,16 +1,40 @@
+// function calDist(pos1,pos2){
+//     var R = 6371e3; // metres
+//     var φ1 = pos1.lat * Math.PI / 180;
+//     var φ2 = pos2.lat * Math.PI / 180;
+//     var Δφ = (pos2.lat-pos1.lat) * Math.PI / 180;
+//     var Δλ = (pos2.lng-pos1.lng) * Math.PI / 180;
+
+//     var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+//             Math.cos(φ1) * Math.cos(φ2) *
+//             Math.sin(Δλ/2) * Math.sin(Δλ/2);
+//     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+//     return R * c;
+// }
 function calDist(pos1,pos2){
-    var R = 6371e3; // metres
-    var φ1 = pos1.lat * Math.PI / 180;
-    var φ2 = pos2.lat * Math.PI / 180;
-    var Δφ = (pos2.lat-pos1.lat) * Math.PI / 180;
-    var Δλ = (pos2.lng-pos1.lng) * Math.PI / 180;
-
-    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-    return R * c;
+    lat1=pos1.lat
+    lon1=pos1.lng
+    lat2=pos2.lat
+    lon2=pos2.lng
+	if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		dist = dist * 1609.34
+		return dist;
+	}
 }
 
 function updateInRange(org, mem){
