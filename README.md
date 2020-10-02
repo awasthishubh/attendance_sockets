@@ -133,7 +133,7 @@
 
 * ### status
   * Event will be triggered by server when admin/member will emit `status` event (refer status in event emit)
-  * It will send status following details
+  * It will send following status details
     * Connected: `true || false`
     * type: `Admin || Member`
     * inRange: "`true` if member is in range of threshold distance"
@@ -146,8 +146,8 @@
     ```
 
 * ### lobbyClosed
-  * Event will be triggered automatically for members when admin leaves or closes lobby
-  * Event will be triggered only for members
+  * Event will be triggered automatically for members when admin leaves or closes lobby.
+  * Event will be triggered only for members.
     ``` javascript
     socket.on('lobbyClosed',()=>{
         console.log('lobby Closed by admin')
